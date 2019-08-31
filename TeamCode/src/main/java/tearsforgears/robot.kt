@@ -1,9 +1,6 @@
 package tearsforgears
 
-import com.qualcomm.robotcore.hardware.DcMotor
-import com.qualcomm.robotcore.hardware.DcMotorController
-import com.qualcomm.robotcore.hardware.DcMotorControllerEx
-import com.qualcomm.robotcore.hardware.HardwareMap
+import com.qualcomm.robotcore.hardware.*
 import org.firstinspires.ftc.robotcore.external.Telemetry
 
 class Robot (hardwareMap: HardwareMap, telemetry: Telemetry){
@@ -14,21 +11,15 @@ class Robot (hardwareMap: HardwareMap, telemetry: Telemetry){
     val liftMotor = hmap.dcMotor.get("lift")
     val dumpServo = hmap.servo.get("dump")
 
-    val SERVO_DUMP_POS = 1.0
+    val SERVO_DUMP_POS = 0.25
     val SERVO_NODUMP_POS = 0.0
-
-
-
-    // todo: figure out what these values should be
-    val LIFT_LEVELS = intArrayOf(0, 100, 200, 300)
-    val MAX_LIFT_LEVEL = LIFT_LEVELS.size - 1
-    var liftLevel = 0
 
     init {
         leftMotor.mode = DcMotor.RunMode.RUN_USING_ENCODER
         rightMotor.mode = DcMotor.RunMode.RUN_USING_ENCODER
+        rightMotor.direction = DcMotorSimple.Direction.REVERSE
         liftMotor.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
-        liftMotor.mode = DcMotor.RunMode.RUN_TO_POSITION
+        liftMotor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
         dumpServo.position = SERVO_NODUMP_POS
     }
 
@@ -37,23 +28,8 @@ class Robot (hardwareMap: HardwareMap, telemetry: Telemetry){
         rightMotor.power = right.toDouble()
     }
 
-    fun liftUp() {
-        if (liftLevel < MAX_LIFT_LEVEL) {
-            liftMotor.targetPosition = LIFT_LEVELS[++liftLevel]
-        }
-    }
-
-    fun liftDown() {
-        if (liftLevel > 0) {
-            liftMotor.targetPosition = LIFT_LEVELS[--liftLevel]
-        }
-    }
-
-    fun setLiftPosition(level : Int) {
-        if (0 <= level && level <= MAX_LIFT_LEVEL) {
-            liftLevel = level
-            liftMotor.targetPosition = LIFT_LEVELS[liftLevel]
-        }
+    fun lift(power:Number) {
+        liftMotor.power = Math.pow(power.toDouble(), 5.0)
     }
 
     fun dump(dumped : Boolean) {
@@ -66,19 +42,5 @@ class Robot (hardwareMap: HardwareMap, telemetry: Telemetry){
                 dumpServo.position = SERVO_NODUMP_POS
             }
         }
-    }
-
-    fun setDriveRunmodes(mode : DcMotor.RunMode) {
-        leftMotor.mode = mode
-        rightMotor.mode = mode
-    }
-
-    fun setTargetPositions(leftPos : Int, rightPos : Int) {
-        leftMotor.targetPosition = leftPos
-        rightMotor.targetPosition = rightPos
-    }
-
-    fun currentDriveEncoderPositions() : Pair<Int, Int> {
-        return Pair(leftMotor.currentPosition, rightMotor.currentPosition)
     }
 }
