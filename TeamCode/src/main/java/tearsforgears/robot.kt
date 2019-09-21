@@ -11,6 +11,7 @@ class Robot (hardwareMap: HardwareMap, telemetry: Telemetry){
     val liftMotor = hmap.dcMotor.get("lift")
     val dumpServo = hmap.servo.get("dump")
 
+    val LIFT_MAX_SPEED = 0.1
     val SERVO_DUMP_POS = 0.25
     val SERVO_NODUMP_POS = 0.0
 
@@ -18,8 +19,7 @@ class Robot (hardwareMap: HardwareMap, telemetry: Telemetry){
         leftMotor.mode = DcMotor.RunMode.RUN_USING_ENCODER
         rightMotor.mode = DcMotor.RunMode.RUN_USING_ENCODER
         rightMotor.direction = DcMotorSimple.Direction.REVERSE
-        liftMotor.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
-        liftMotor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
+        liftMotor.mode = DcMotor.RunMode.RUN_USING_ENCODER
         dumpServo.position = SERVO_NODUMP_POS
     }
 
@@ -29,8 +29,9 @@ class Robot (hardwareMap: HardwareMap, telemetry: Telemetry){
     }
 
     fun lift(power:Number) {
-        liftMotor.power = Math.pow(power.toDouble(), 5.0)
+        liftMotor.power = LIFT_MAX_SPEED * Math.pow(power.toDouble(), 3.0)
     }
+
 
     fun dump(dumped : Boolean) {
         if (dumped) {
