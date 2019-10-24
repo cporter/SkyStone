@@ -30,6 +30,19 @@ public class SimpleMecanum extends OpMode {
         rb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
+    static double absmax(double... ds) {
+        double max = Double.MIN_VALUE;
+
+        for (double d : ds) {
+            final double x = Math.abs(d);
+            if (x > max) {
+                max = x;
+            }
+        }
+
+        return max;
+    }
+
     @Override
     public void loop() {
         final double x = gamepad1.left_stick_x;
@@ -42,10 +55,17 @@ public class SimpleMecanum extends OpMode {
         final double sin = Math.sin(direction + Math.PI / 4.0);
         final double cos = Math.cos(direction + Math.PI / 4.0);
 
-        lf.setPower(speed * sin + r);
-        lb.setPower(speed * cos + r);
-        rf.setPower(speed * cos - r);
-        rb.setPower(speed * sin - r);
+        final double lfp = speed * sin + r;
+        final double lbp = speed * cos + r;
+        final double rfp = speed * cos - r;
+        final double rbp = speed * sin - r;
+
+        final double scale = absmax(1.0, lfp, lbp, rfp, rbp);
+
+        lf.setPower(lfp / scale);
+        lb.setPower(lbp / scale);
+        rf.setPower(rfp / scale);
+        rb.setPower(rbp / scale);
 
     }
 }
