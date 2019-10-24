@@ -49,6 +49,16 @@ public class EncoderTest extends LinearOpMode {
                 rf.setPower(1.0);
                 rb.setPower(1.0);
                 lb.setPower(1.0);
+            } else if (gamepad1.dpad_left) {
+                lf.setPower(-1.0);
+                lb.setPower(-1.0);
+                rb.setPower(1.0);
+                rf.setPower(1.0);
+            } else if (gamepad1.dpad_right) {
+                lf.setPower(1.0);
+                lb.setPower(1.0);
+                rb.setPower(- 1.0);
+                rf.setPower(- 1.0);
             } else {
                 lf.setPower(0.0);
                 rf.setPower(0.0);
