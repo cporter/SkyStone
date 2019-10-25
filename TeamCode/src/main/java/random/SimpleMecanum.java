@@ -16,8 +16,8 @@ public class SimpleMecanum extends OpMode {
         rf = hardwareMap.dcMotor.get("rf");
         rb = hardwareMap.dcMotor.get("rb");
 
-        rf.setDirection(DcMotorSimple.Direction.REVERSE);
-        rb.setDirection(DcMotorSimple.Direction.REVERSE);
+        lf.setDirection(DcMotorSimple.Direction.REVERSE);
+        lb.setDirection(DcMotorSimple.Direction.REVERSE);
 
         lb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         lf.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -52,8 +52,8 @@ public class SimpleMecanum extends OpMode {
         final double direction = Math.atan2(y, x);
         final double speed = Math.sqrt(x * x + y * y);
 
-        final double sin = Math.sin(direction + Math.PI / 4.0);
-        final double cos = Math.cos(direction + Math.PI / 4.0);
+        final double sin = Math.sin(direction - Math.PI / 4.0);
+        final double cos = Math.cos(direction - Math.PI / 4.0);
 
         final double lfp = speed * sin + r;
         final double lbp = speed * cos + r;
