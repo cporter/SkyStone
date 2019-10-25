@@ -32,12 +32,13 @@ public class EncoderTest extends LinearOpMode {
         rf.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        rf.setDirection(DcMotorSimple.Direction.REVERSE);
-        rb.setDirection(DcMotorSimple.Direction.REVERSE);
+        lf.setDirection(DcMotorSimple.Direction.REVERSE);
+        lb.setDirection(DcMotorSimple.Direction.REVERSE);
 
         waitForStart();
 
         while (opModeIsActive()) {
+
 
             if (gamepad1.dpad_down) {
                 lf.setPower(- 1.0);
@@ -78,6 +79,7 @@ public class EncoderTest extends LinearOpMode {
                 rb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             }
 
+            telemetry.addData("gamepad1", String.format(Locale.US, "lx %.2f ly %.2f", gamepad1.left_stick_x, gamepad1.left_stick_y));
             telemetry.addData("encoders", String.format(Locale.US, "lf %d lb %d rf %d rb %d",
                     lf.getCurrentPosition(), lb.getCurrentPosition(), rf.getCurrentPosition(), rb.getCurrentPosition()));
             telemetry.update();
