@@ -18,13 +18,12 @@ import tearsforgears.ControllerState;
 public class SimpleHolonomic extends OpMode {
     private DcMotor lf, rf, lb, rb;
     private BNO055IMU imu;
-    private ControllerState controller;
-
+    private boolean previousX = false;
     private double forwardAngle;
 
     private void initIMU() {
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+        parameters.angleUnit           = BNO055IMU.AngleUnit.RADIANS;
         parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
         parameters.loggingEnabled      = true;
@@ -59,21 +58,6 @@ public class SimpleHolonomic extends OpMode {
         rb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         initIMU();
-
-        controller = new ControllerState(gamepad1);
-    }
-
-    static double absmax(double... ds) {
-        double max = Double.MIN_VALUE;
-
-        for (double d : ds) {
-            final double x = Math.abs(d);
-            if (x > max) {
-                max = x;
-            }
-        }
-
-        return max;
     }
 
     private static double scaleRotation(final double rotation, final double speed) {
@@ -94,9 +78,10 @@ public class SimpleHolonomic extends OpMode {
     private void drive() {
         final Orientation angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS);
 
-        if (controller.xOnce()) {
+        if (gamepad1.x && ! previousX) {
             forwardAngle = angles.firstAngle;
         }
+        previousX = gamepad1.x;
 
 
         final double x = gamepad1.left_stick_x;
@@ -127,10 +112,7 @@ public class SimpleHolonomic extends OpMode {
 
     @Override
     public void loop() {
-        controller.update();
-
         drive();
-
         telemetry.update();
     }
 }
